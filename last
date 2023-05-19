@@ -1,0 +1,28 @@
+import scipy.stats as stats
+import pandas as pd
+
+# Assuming 'df' is your DataFrame with the birth weight data
+# and 'CBWGT' is the column containing the weights
+weight_data = df['CBWGT']
+
+# Separating the weights by gender (assuming 'gender' column represents gender)
+boys_weights = weight_data[df['CBSEX'] == '1']
+girls_weights = weight_data[df['CBSEX'] == '0']
+
+# Performing the two-sample t-test
+t_statistic, p_value_t = stats.ttest_ind(boys_weights, girls_weights, alternative='greater')
+
+# Performing the chi-square test for variance
+chi_statistic, p_value_chi = stats.chisquare(weight_data.var(), ddof=1)
+
+# Comparing the p-values with the significance level
+alpha = 0.05
+if p_value_t < alpha:
+    print("Reject null hypothesis for t-test - There is evidence that boys' birth weights are greater than girls' birth weights.")
+else:
+    print("Fail to reject null hypothesis for t-test - There is no evidence that boys' birth weights are greater than girls' birth weights.")
+
+if p_value_chi < alpha:
+    print("Reject null hypothesis for chi-square test - There is evidence that the variance of birth weights is not equal to one.")
+else:
+    print("Fail to reject null hypothesis for chi-square test - There is no evidence that the variance of birth weights is not equal to one.")
